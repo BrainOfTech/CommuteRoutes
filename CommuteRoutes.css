@@ -13,10 +13,35 @@ body{
     justify-content: center;
 }
 
+.colorTransitionOnHover{
+    transition: background-color 2s ease;
+}
+.colorTransitionOnHover:hover{
+    background-color:#88FF99;
+}
+
+
+@keyframes lightColorCycle{
+    0% {color:#880000;}
+    50% {color:#000088;}
+    100% {color:#880000;}
+}
+.lightColorCycleOnHover:hover a{
+    animation: lightColorCycle 10s linear infinite;
+}
+
 .newSchool {
-    background-color:#22FF33;
+    background-color:#88FF99;
+    text-align:justify;
+    text-align-last:center;
 }
 
 .oldSchool {
     
+}
+
+.newSchool p{
+    max-width:50em;
+    margin:auto;
+    margin-top:1.5em;
 }
