@@ -45,3 +45,13 @@ body{
     margin:auto;
     margin-top:1.5em;
 }
+
+.newSchool ol,
+.newSchool ul,
+.newSchool table{
+    max-width:50em;
+    text-align:left;
+    text-align-last:left;
+    margin:auto;
+    margin-top:1.5em;
+}
