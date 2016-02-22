@@ -34,6 +34,7 @@ body{
     background-color:#88FF99;
     text-align:justify;
     text-align-last:center;
+    padding:2em;
 }
 
 .oldSchool {
@@ -56,13 +57,13 @@ body{
     margin-top:1.5em;
 }
 
-td:first-of-type{
-    /*The first column is frequently a date, which looks much better on a single line*/
-    min-width:6em;
-}
-
 table {
     border-collapse:collapse;
+}
+
+thead{
+    border-bottom:1px solid black;
+    text-align:center;
 }
 
 tr {
@@ -72,3 +73,9 @@ tr {
 tr:first-of-type{
     border-top:none;
 }
+ 
+ td:first-of-type{
+     /*The first column is frequently a date, which looks much better on a single line*/
+     min-width:6em;
+     border-right:1px solid black;
+ }

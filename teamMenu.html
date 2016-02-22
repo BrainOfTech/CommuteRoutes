@@ -83,6 +83,11 @@
         </style>
     </head>
     <body>
+        <script id="redirect">
+            if(sessionStorage.isInOldSchoolMode!='false'){
+                window.location.href="./team.html";
+            }
+        </script>
         <script id="menuEffects">
             grayOut=function(){
                 var screen = document.getElementById("grayOut");
