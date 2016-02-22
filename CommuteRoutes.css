@@ -55,3 +55,20 @@ body{
     margin:auto;
     margin-top:1.5em;
 }
+
+td:first-of-type{
+    /*The first column is frequently a date, which looks much better on a single line*/
+    min-width:6em;
+}
+
+table {
+    border-collapse:collapse;
+}
+
+tr {
+    border-top:1px solid black;
+}
+
+tr:first-of-type{
+    border-top:none;
+}
