@@ -51,30 +51,28 @@ body{
 .newSchool ul,
 .newSchool table{
     max-width:50em;
-    text-align:left;
-    text-align-last:left;
+    border-collapse:collapse;
     margin:auto;
     margin-top:1.5em;
+    text-align:left;
+    text-align-last:left;
 }
 
-table {
-    border-collapse:collapse;
-}
-
-thead{
+.newSchool thead tr {
     border-bottom:1px solid black;
     text-align:center;
+    color:blue;
 }
 
-tr {
+.newSchool tbody tr {
     border-top:1px solid black;
 }
 
-tr:first-of-type{
+.newSchool tr:first-of-type{
     border-top:none;
 }
- 
- td:first-of-type{
+
+.newSchool td:first-of-type{
      /*The first column is frequently a date, which looks much better on a single line*/
      min-width:6em;
      border-right:1px solid black;
