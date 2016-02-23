@@ -54,6 +54,9 @@ body{
     border-collapse:collapse;
     margin:auto;
     margin-top:1.5em;
+}
+.newSchool ol,
+.newSchool ul {
     text-align:left;
     text-align-last:left;
 }
