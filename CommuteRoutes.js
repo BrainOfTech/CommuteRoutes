@@ -4,6 +4,7 @@ if(sessionStorage.isInOldSchoolMode != 'false'){ //sessionStorage saves everythi
     var links = [];
     links.push(["./index.html","About"]);
     links.push(["./Requirements.html", "Project Requirements"]);
+    links.push(["./Design.html", "Solution Design"]);
     links.push(["./schedule.html","Project Schedule"]);
     links.push(["./activity.html","Activity Log"]);
     links.push(["./team.html", "Team"]);
