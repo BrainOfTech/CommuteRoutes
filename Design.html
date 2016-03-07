@@ -8,20 +8,39 @@
     <body>
         <script src="./CommuteRoutes.js"></script>
         <h1>Solution Design</h1>
-        <p>The solution we have design has three major components:</p>
+        <h2>Overview</h2>
+        <p>The goal of this project is to facilitate the collection of anonymized data for research purposes related to how individuals’ preferences change over time. For an expanded description of the project, consult the <a href="./requirements.html">requirements document</a>. The solution we have designed has three major components:</p>
         <ol>
-            <li>A mobile application that semi-autonomously collects data</li>
-            <li>A secure transmission protocol and data processing pipeline</li>
-            <li>A database with web frontends for involved researchers</li>
+            <a href="#mobile"><li>A mobile application that semi-autonomously collects data</li></a>
+            <a href="#pipeline"><li>A secure transmission protocol and data processing pipeline</li></a>
+            <a href="#database"><li>A database with web frontends for involved researchers</li></a>
         </ol>
+        <h2>Environment</h2>
+        <p>The project requires an Apple Iphone with iOS to run the client program. It also requires an active internet connection on this phone to connect to the server. The server needs Python installed to run the processing script, an SMTP email server running to receive the client data,  an HTTP webserver to host the researcher interface site,  and a MySQL database to manage the data.</p>
+        <h2>Modules and Data Flow</h2>
+        <img src="./Dataflow.png">
+        <p>The system consists of three modules: an iOS application,  a processing script, and a web server. The iOS app is responsible for live collection of data about the routes the user takes from home to work and from work to home. The processing script is responsible for taking the collected raw data, extracting useful information, and anonymizing the extracted data. The webserver is responsible for storing the anonymized data in a database, and presenting it to researchers.</p>
         <div id="mobile">
-            TODO - mobile
+            <h3>iOS App</h3>
+            <p>When the program launches, it will first complete all necessary initializations. If this is the first launch of the program, it will then display a settings menu, where the user must enter the location of their home and of their work, and expected arrival and departure windows.  The program will then enter the default view, MasterView. Masterview contains a list of features of the route which are selectable, a button to redisplay the settings menu, and a button to send all stored route data. If any features of the route are selected, the screen will display DetailView, which contains all the information contained in that feature. In the DetailView, the user is able to edit attributes of the features.</p>
+            <img src="./iOSmockup.png">
+            <p>When the program is put into the background, it waits until it receives an event message indicating that the user is expected to be leaving for their destination soon, and will start the GPS is the significant-change service mode. It will then record all GPS event messages in a feature until the time-out limit is reached or the GPS event contains the location of the destination. When time-out or destination is reached, the GPS is shut down. If the destination was reached, the NOAA web api is queried for current local weather data for the area spanned by the route. If there are any features which can not be identified, the user is asked to identify them. And the route is then stored internally in the phone until the route sending button is pressed. The phone then reenters the state of waiting for an event message indicating the user is expected to be leaving for their destination soon.</p>
+            <img src="./Flowchart.png">
+            <p>This chart presents the algorithmic function of the client application. In reality,  it is an event-driven program. However, the algorithm is more easily visualized as being procedural.</p>
+            <p>When the route sending button is pressed, the program verifies that the data is complete and no additional user feature identification is needed. It then queries the public research HTTP server for the researcher’s PGP public key. The program will then encrypt the route data via PGP, with that key, and email the encrypted data to the server hosting the processing script.  It then continuously queries the public research HTTP server for a list cryptographically hashed unique identifiers that indicate participation, it attempts to decrypt each list element using its private key, checking if the route data has been received and processed.  Upon locating the confirmation of receipt, the raw route data is wiped from the phone.</p>
+            <img src="./PGP.gif">
+            <p>Image taken from Introduction to Cryptography in the PGP 6.5.1 documentation. Copyright © 1990-1999 Network Associates, Inc. and its Affiliated Companies.</p>
         </div>
         <div id="pipeline">
-            TODO - pipeline
+            <h3>Data Processing Pipeline</h3>
         </div>
         <div id="database">
-            TODO - database
+            <h3>Database</h3>
+            
         </div>
+        <h2>User Screens</h2>
+        <h2>Use Cases</h2>
+        <h2>Design Considerations</h2>
+        <h2>Sizing Estimates</h2>
     </body>
 </html>

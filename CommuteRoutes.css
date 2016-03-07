@@ -30,53 +30,62 @@ body{
     animation: lightColorCycle 10s linear infinite;
 }
 
-.newSchool {
-    background-color:#88FF99;
+body {
+    background-color:#E0EEFF;
     text-align:justify;
     text-align-last:center;
     padding:2em;
 }
 
-.oldSchool {
-    
-}
-
-.newSchool p{
+p {
     max-width:50em;
     margin:auto;
     margin-top:1.5em;
 }
 
-.newSchool ol,
-.newSchool ul,
-.newSchool table{
+ol,
+ul,
+table{
     max-width:50em;
     border-collapse:collapse;
     margin:auto;
     margin-top:1.5em;
 }
-.newSchool ol,
-.newSchool ul {
+ol,
+ul {
     text-align:left;
     text-align-last:left;
 }
 
-.newSchool thead tr {
+thead tr {
     border-bottom:1px solid black;
     text-align:center;
     color:blue;
 }
 
-.newSchool tbody tr {
+tbody tr {
     border-top:1px solid black;
 }
 
-.newSchool tr:first-of-type{
+tr:first-of-type{
     border-top:none;
 }
 
-.newSchool td:first-of-type{
+td:first-of-type{
      /*The first column is frequently a date, which looks much better on a single line*/
      min-width:6em;
      border-right:1px solid black;
- }
+}
+
+.insetText p{
+    text-align:left;
+    text-align-last:left;
+    max-width:50em;
+}
+
+.insetText h4,
+.insetText h5,
+.insetText h6{
+    text-align:left;
+    text-align-last:left;
+}
