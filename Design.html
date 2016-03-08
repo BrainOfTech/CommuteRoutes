@@ -23,24 +23,65 @@
         <div id="mobile">
             <h3>iOS App</h3>
             <p>When the program launches, it will first complete all necessary initializations. If this is the first launch of the program, it will then display a settings menu, where the user must enter the location of their home and of their work, and expected arrival and departure windows.  The program will then enter the default view, MasterView. Masterview contains a list of features of the route which are selectable, a button to redisplay the settings menu, and a button to send all stored route data. If any features of the route are selected, the screen will display DetailView, which contains all the information contained in that feature. In the DetailView, the user is able to edit attributes of the features.</p>
-            <img src="./iOSmockup.png">
+            <img src="./iOSmockup.png" id="mockup">
             <p>When the program is put into the background, it waits until it receives an event message indicating that the user is expected to be leaving for their destination soon, and will start the GPS is the significant-change service mode. It will then record all GPS event messages in a feature until the time-out limit is reached or the GPS event contains the location of the destination. When time-out or destination is reached, the GPS is shut down. If the destination was reached, the NOAA web api is queried for current local weather data for the area spanned by the route. If there are any features which can not be identified, the user is asked to identify them. And the route is then stored internally in the phone until the route sending button is pressed. The phone then reenters the state of waiting for an event message indicating the user is expected to be leaving for their destination soon.</p>
             <img src="./Flowchart.png">
             <p>This chart presents the algorithmic function of the client application. In reality,  it is an event-driven program. However, the algorithm is more easily visualized as being procedural.</p>
-            <p>When the route sending button is pressed, the program verifies that the data is complete and no additional user feature identification is needed. It then queries the public research HTTP server for the researcher’s PGP public key. The program will then encrypt the route data via PGP, with that key, and email the encrypted data to the server hosting the processing script.  It then continuously queries the public research HTTP server for a list cryptographically hashed unique identifiers that indicate participation, it attempts to decrypt each list element using its private key, checking if the route data has been received and processed.  Upon locating the confirmation of receipt, the raw route data is wiped from the phone.</p>
+            <p id="pipeline">When the route sending button is pressed, the program verifies that the data is complete and no additional user feature identification is needed. It then queries the public research HTTP server for the researcher’s PGP public key. The program will then encrypt the route data via PGP, with that key, and email the encrypted data to the server hosting the processing script.  It then continuously queries the public research HTTP server for a list cryptographically hashed unique identifiers that indicate participation, it attempts to decrypt each list element using its private key, checking if the route data has been received and processed.  Upon locating the confirmation of receipt, the raw route data is wiped from the phone.</p>
             <img src="./PGP.gif">
             <p>Image taken from Introduction to Cryptography in the PGP 6.5.1 documentation. Copyright © 1990-1999 Network Associates, Inc. and its Affiliated Companies.</p>
         </div>
-        <div id="pipeline">
+        <div>
             <h3>Data Processing Pipeline</h3>
+            <p>The primary purpose of the data processing pipeline is to search for features like new paths or locations used or visited on the route, and to abstract the original GPS coordinates to the level of labelled features. The pipeline has the following steps:</p>
+            <img src="./FeatureExtractionDiagram.png">
+            <p>The first step is partitioning the GPS coordinates into locations and paths. This is done with the following algorithm:</p>
+            <div class="insetText" style="padding:5em;background-color:#FAFAFA;">
+                <h4>IsPath?</h4>
+                <ol>
+                    <li>Regress the GPS latitude vs. time
+                    <br>and longitude vs. time.</li>
+                    <li>Test whether correlation test statistic is significant.</li>
+                </ol>
+                <h4>IdentifyPaths</h4>
+                <ol>
+                    <li>With each point as a center</li>
+                        <ol><li>Do a binary search over a symmetric range to maximize the number of points included such than the subsequence is not a route.</li><li>Use a statistical test to determine whether end points (due to off-by-one error possibility due to symmetric collection of points) belong to the subsequence or not.</li></ol>
+                    <li>Reconcile the identified subsequences to separate locations and paths.</li>
+                </ol>
+                <p>[Runtime Estimation:] The above algorithm is estimated to run in O(n log_n m<sup>3</sup>) where n is the number of points in the sample and m is the maximum number of consecutive observations in a single location. However, it should be noted that the cost due to the regression test (here bounded by O(m<sup>3</sup>)) can be fixed below some constant by randomly sampling points, for example, from a set that is prohibitively large.</p>
+            </div>
+            <p>After the sequence of GPS points has been partitioned into (alternately) locations and paths, the identified locations and paths should be compared against known locations and paths. Locations are Stored as (Center, Radius). Paths are Stored as (Start Location, End Location, Average Latitude, Average Longitude, Length). These tuples are compared with a tolerance for comparison according to some ad-hoc rules.</p>
+            <p>Finally, the identified paths and locations are mapped to their corresponding labels in the route record database, and the appropriate entries are made.</p>
         </div>
         <div id="database">
             <h3>Database</h3>
-            
+            <p>There are two databases with front-end access: a database storing abstracted route data, and a database storing a record of participation for the purpose of later being able to compensate the first n participants. The data is delivered in ecrypted format from the app to an SMTP server, and then follows this pipeline to get to the databases:</p>
+            <img src="./DatabasePipeline.png">
+            <p>After the raw data is processed by the algorithm described in <a href="#pipeline">the section on the data processing pipeline</a>, two records are generated: one that goes into the route record database, and one that goes into the participation log. The database structures are as below:</p>
+            <img src="./DatabaseStructure.png">
+            <img src="./ParticipationDiagram.png">
+            <p>A python script scheduled to run periodically (several times a day) reads raw data from the emails delivered from the app and runs them through the analysis and storage in the database.</p>
         </div>
         <h2>User Screens</h2>
+        <p><a href="#mockup">Above</a> is a mockup of the iOS interface for reviewing the list of tracked locations.</p>
         <h2>Use Cases</h2>
+        <p>(There are not many use cases described here, since most of the app's work is done in the background.)</p>
+        <ol>
+            <li>A participant downloads the app, opens it, and is presented with a participation agreement. After agreeing to the conditions, they are prompted for contact information so they can receive their compensation (if they qualify by being one of the first n users). They are then taken to the main screen where they can signal the app that they are about to leave home or work, access the settings menu, or exit the app and let it run in the background. The user lets it run in the background.</li>
+            <li>A researcher visits the researcher's page to view the summary data for the study. They are first prompted for their password. After logging in, the researcher examines how many participants there are and how many routes they have uploaded. The researcher examines a sample route, and then logs off.</li>
+        </ol>
         <h2>Design Considerations</h2>
+        <p>It was decided that the mobile application should be developed for iOS due to team members' previous experience with that platform. Collecting traffic data will probably not be a part of the finished product due jointly to the expense and difficulty to pull that information from existing sources and the number of readily available proxies, including average speed, time of day, and nunber of in-transit stops (e.g. at stoplights).</p>
         <h2>Sizing Estimates</h2>
+        <table>
+            <tbody>
+                <tr><td>iOS app</td><td>The iOS app is estimated to total 1500 lines of code.</td></tr>
+                <tr><td>email processing script</td><td>The email processing script is estimated to be 500 lines of code.</td></tr>
+                <tr><td>researcher web interface</td><td>The researcher interface is estimated to be 500 lines of code.</td></tr>
+                <tr><td>feature extraction script</td><td>The feature extraction script is estimated to be 800 lines of code.</td></tr>
+                <tr><td>MySQL databases</td><td>Now that the data format has been decided, creating the database should be simple. Less than 100 lines of code.</td></tr>
+            </tbody>
+        </table>
     </body>
 </html>
