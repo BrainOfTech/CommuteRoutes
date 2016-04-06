@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Testing</title>
+        <link rel="stylesheet" type="text/css" href="./CommuteRoutes.css">
+    </head>
+    <body>
+        <script src="./CommuteRoutes.js"></script>
+        <h1>Testing Plan</h1>
+        <h2>Unit Testing</h2>
+        <h3>Mobile Application</h3>
+        <p>We will be testing the appropriate flags following each of the following action branches:</p>
+        ACTIONS:
+        <ul>
+            <li>Press Send</li>
+            <ul>
+                <li>[Encryption key fetched]</li>
+                <li>[Stack of Route objects is encrypted with the key]</li>
+                <li>[Mail composer is opened with address set to our server, message set to the encrypted stack object as a string, and subject is set to unique id]</li>
+                <li>Press Cancel</li>
+                <ul>
+                    <li>Press Delete Draft</li>
+                    <ul>
+                        <li>[Email draft not saved]</li>
+                        <li>[Return to main menu]</li>
+                    </ul>
+                    <li>Press Save Draft</li>
+                    <ul>
+                        <li>[Email draft saved]</li>
+                        <li>[Return to main menu]</li>
+                    </ul>
+                </ul>
+                <li>Press Send</li>
+                <ul>
+                    <li>Send fails</li>
+                    <ul>
+                        <li>[display error message]</li>
+                        <li>[return to main menu]</li>
+                    </ul>
+                    <li>Send succeeds</li>
+                    <ul>
+                        <li>[whoosh sound]</li>
+                        <li>[location stack cleared]</li>
+                        <li>[return to main menu]</li>
+                    </ul>
+                </ul>
+            </ul>
+            <li>Press Home</li>
+            <ul>
+                <li>Location request fails</li>
+                <ul>
+                    <li>[Display error message]</li>
+                </ul>
+                <li>Location request succeeds</li>
+                <ul>
+                    <li>[Set home location]</li>
+                    <li>[inTransit set to false]</li>
+                </ul>
+            </ul>
+            <li>Press Work</li>
+            <ul>
+                <li>Location request fails</li>
+                <ul>
+                    <li>[Display error message]</li>
+                </ul>
+                <li>Location request succeeds</li>
+                <ul>
+                    <li>[Set work location]</li>
+                    <li>[inTransit set to false]</li>
+                </ul>
+            </ul>
+            <li>New Location Event</li>
+            <ul>
+                <li>Not(Home and Work are set)</li>
+                <ul>
+                    <li>[Nothing Happens]</li>
+                </ul>
+                <li>Home and Work are set</li>
+                <ul>
+                    <li>While inTransit</li>
+                    <ul>
+                        <li>New location is not within 1 kilometer of either endpoint</li>
+                        <ul>
+                            <li>[New location is added to route-specific stack]</li>
+                        </ul>
+                        <li>New location is within 1 kilometer of an endpoint</li>
+                        <ul>
+                            <li>opposite location as start</li>
+                            <ul>
+                                <li>[Location added to route-specific stack]</li>
+                                <li>[inTransit set to false]</li>
+                            </ul>
+                            <li>same location as start</li>
+                            <ul>
+                                <li>[Route object deleted]</li>
+                                <li>[inTransit set to false]</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                    <li>While Not(inTransit)</li>
+                    <ul>
+                        <li>New location is not within 1 kilometer of either endpoint</li>
+                        <ul>
+                            <li>[New Route object created]</li>
+                            <li>[inTransit set to true]</li>
+                            <li>[Location is added to route-specific stack]</li>
+                        </ul>
+                        <li>New location is within 1 kilometer of an endpoint</li>
+                        <ul>
+                            <li>[Nothing happens]</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </ul>
+        </ul>
+        <h3>Processing Script</h3>
+        <p>The processing script has several algorithmic subcomponents that will be tested for soundness by using known or expected inputs and outputs. It is difficult to test edge cases, since the desired behavior of the path/location classification algorithm is qualitatively defined, but we will test both easy cases and hard cases (noisier or lower-resolution data, etc.).</p>
+        <ol>
+            <li>Correctly parsing encrypted data delivered to email. (Post-parsed data should be identical to the coordinate stream collected by the mobile applications.)</li>
+            <li>Identifying incomplete or duplicate data logs. (If so, drop the record. If the application does not see the posted receipt, the record will be sent with the next transmission.)</li>
+            <li>Using linear regression to identify whether a sequence of points is temporally correlated with a direction of movement. We will test whether the regression returns the correct correlation coefficients.</li>
+            <li>Whether the algorithm accurately identifies paths, even with some noise, such as stopping at stoplights, making multiple turns, and stop-and-go traffic.</li>
+            <li>Whether the intermediate path/location data is correctly translated into a set of features for a given commute.</li>
+        </ol>
+        <h3>Researcher Back-End</h3>
+        <h4>Display of Data</h4>
+        <ol>
+            <li>Make sure the html and php is working correctly to display the content of the database.</li>
+            <li>Test the display function with empty database.</li>
+            <li>Test the display function with a database that has more than 5000 entry of route.</li>
+            <li>Test the display function with various type of data is input as null in the database.</li>
+            <li>Test the display function with mysql injection, to ensure mysql injection is not possible.</li>
+            <li>Test the display function with several search options.</li>
+            <li>Test the display function on different browsers and different OS's (windows, Mac, Linux).</li>
+            <li>Test the display function by changing the size of the window.</li>
+        </ol>
+        <h4>Inserting Data into Database</h4>
+        <ol>
+            <li>Test Insert function with correct data type.</li>
+            <li>Test insert function with wrong data type. Display error from the database if the database detects a wrong data type.</li>
+            <li>Test insert function with empty string of data. Display error from the database if the database detects empty string of data.</li>
+            <li>Test insert function with input null as data. Display error from database if the database does not accept null for the specific column.</li>
+            <li>Test insert function with large amount of data (1000~ 9000 rows of data). Display error from the database if the database fails to insert the large amount of data.</li>
+            <li>Test insert function with overflow data type. Display error from the database if the database detects overflow data type.</li>
+        </ol>
+        <h2>Integration Testing</h2>
+        <p>The interfaces between the components will be tested as follows:</p>
+        <ol>
+            <li>The app will be used to track commutes, and we will examine whether the processing script:</li>
+            <ul>
+                <li>Receives and correctly parses the data.</li>
+                <li>Identifies the correct number of paths and locations.</li>
+                <li>Correctly identifies identical locations and paths.</li>
+            </ul>
+            <li>The results from the processing script will be used to populate the researcher database. We will test whether the researcher-viewable data has the correct number of features for a set of commutes and whether the web interface displays correct results.</li>
+        </ol>
+        <h2>System Testing</h2>
+        <p>System testing will consist of:</p>
+        <ol>
+            <li>Installing the mobile app on a phone and deploying the data processing and web servers.</li>
+            <li>Registering as a new user and tracking a commute from one location to another.</li>
+            <li>Reviewing the features identified and selecting one or more to be ignored by future tracking.</li>
+            <li>Tracking an additional commute.</li>
+            <li>Logging in as a researcher and examining how much data has been collected.</li>
+            <li>As a researcher, examining the anonymized logs relating to a particular user or commute.</li>
+        </ol>
+        <p>We will also test the security of the researcher page and mobile app by attempting to view commute records without the appropriate password by spoofing page queries and (for the researcher web interface) examining the source code of the returned pages (for password leaks or other security holes).</p>
+        <h2>Customer Testing</h2>
+        <p>Time will be scheduled with the client for her to review the product for functionality and identify components that do not perform as desired. She will specifically examine the user interface and researcher interface at minimum. The total system will be tested for user experience for 2 days, for analysis of the system with real daily commutes.</p>
+    </body>
+</html>
