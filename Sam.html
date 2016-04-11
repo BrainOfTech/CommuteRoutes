@@ -40,6 +40,10 @@
                 <tr><td>4-3-16</td><td>
                     I continued work on the implementation of the processing script, met with the client to discuss user interfaces, and met with the team to discuss our testing plan. There were no significant problems. Unfortunately, it has taken me longer than expected to get the proposal for human subjects data collection together, but I also worked on that and in light of my previous meeting with the Office of Research Integrity, I do not believe any significant changes to our design will be necessary.
                 </td></tr>
+                <tr><td>4-10-16</td><td>
+                    I resolved some computational issues with using the coefficient of correlation to determine whether or not a given sequence of points is a location. Specifically, computing an exact p-value for a given correlation coefficient and number of samples is computationally expensive, but I fitted a function to the curve of correlation coefficients versus number of samples for a 95% confidence, and this is much cheaper to compute. I also participated in the team discussion of how to keep the database secure from both malicious users and exposure of data. The plan we came up with involves signed messages from the processing script to the database, so that delete requests cannot be spoofed.
+                </td></tr>
+                
             </tbody>
         </table>
     </body>
